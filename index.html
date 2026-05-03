@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Cuestionario: Arquitectura Cuántica</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fce4ec 0%, #fff3e0 50%, #e0f2f1 100%);
+            font-family: 'Segoe UI', 'Roboto', 'Poppins', system-ui, sans-serif;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-wrapper {
+            max-width: 880px;
+            width: 100%;
+            margin: 0 auto;
+            background: #fffffff0;
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.25);
+            padding: 1.8rem;
+            transition: all 0.2s;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.2rem;
+            border-bottom: 4px solid #ff8c42;
+            padding-bottom: 0.7rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #1e6f9f, #e67e22);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.2px;
+        }
+
+        .sub {
+            color: #e67e22;
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+            font-weight: 600;
+        }
+
+        .progress-area {
+            background: #e6e0f0;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #1a4a6e;
+            font-weight: 700;
+        }
+
+        .question-counter {
+            font-weight: 800;
+            background: #ffcc88;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            color: #5a3a1a;
+        }
+
+        .score-badge {
+            background: #88ccaa;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-weight: 700;
+            color: #1a4a2e;
+        }
+
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.3rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border-left: 8px solid #ff8c42;
+            border-right: 1px solid #f0e0d0;
+        }
+
+        .question-text {
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: #2c3e66;
+            margin-bottom: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            cursor: pointer;
+            padding: 0.6rem 0.8rem;
+            border-radius: 1rem;
+            background: #fefaf5;
+            border: 2px solid #e0d0c0;
+            transition: all 0.15s;
+        }
+
+        .option:hover {
+            background: #fff4e6;
+            border-color: #ffaa66;
+            transform: scale(1.01);
+        }
+
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 2px solid #e67e22;
+            border-radius: 50%;
+            margin-top: 0.1rem;
+            cursor: pointer;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        input[type="radio"]:checked {
+            background-color: #e67e22;
+            border-color: #e67e22;
+            box-shadow: inset 0 0 0 3px white;
+        }
+
+        .option label {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            cursor: pointer;
+            color: #2c3e66;
+            font-weight: 600;
+        }
+
+        .feedback {
+            margin-top: 0.8rem;
+            padding: 0.7rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            background: #fef7e8;
+            border-left: 5px solid;
+            line-height: 1.4;
+            color: #2c3e50;
+        }
+
+        .feedback.correct {
+            border-left-color: #44aa66;
+            background: #e0ffe8;
+        }
+
+        .feedback.incorrect {
+            border-left-color: #ff6666;
+            background: #ffe6e6;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            border: none;
+            background: #ddd0c0;
+            color: #4a3a2a;
+            font-weight: 800;
+            padding: 0.6rem 1.3rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: #3a86ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2a6ad0;
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            background: #e67e22;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #d46a10;
+        }
+
+        .btn-reset {
+            background: #cc6644;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #aa4422;
+        }
+
+        .btn-success {
+            background: #44aa66;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #338855;
+        }
+
+        .results-area {
+            margin-top: 1.5rem;
+            background: #fff2e0;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            border: 2px solid #ffaa33;
+            display: none;
+        }
+
+        .results-area h3 {
+            color: #cc5500;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-summary {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: bold;
+            color: #1f4a2e;
+        }
+
+        .result-detail {
+            max-height: 280px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+        }
+
+        .result-item {
+            padding: 0.4rem;
+            border-bottom: 1px solid #ffd9a0;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 1.2rem;
+            color: #aa8855;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-wrapper {
+                padding: 1rem;
+            }
+            .question-text {
+                font-size: 0.98rem;
+            }
+            .option label {
+                font-size: 0.88rem;
+            }
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="quiz-wrapper">
+    <div class="header">
+        <h1>⚛️ Arquitectura Cuántica</h1>
+        <div class="sub">Qubits, superposición, entrelazamiento, corrección de errores y tecnologías</div>
+    </div>
+
+    <div class="progress-area">
+        <span class="question-counter" id="questionCounter">Pregunta 1 / 20</span>
+        <span class="score-badge" id="liveScore">✅ Aciertos: 0</span>
+    </div>
+
+    <div id="questionContainer"></div>
+
+    <div class="nav-buttons">
+        <button id="prevBtn" class="btn btn-secondary">◀ Anterior</button>
+        <button id="nextBtn" class="btn btn-primary">Siguiente ▶</button>
+        <button id="resetBtn" class="btn btn-reset">⟳ Reiniciar</button>
+        <button id="finalScoreBtn" class="btn btn-success">📊 Ver total</button>
+    </div>
+
+    <div id="resultsPanel" class="results-area"></div>
+    <footer>📌 Selecciona una opción → retroalimentación inmediata. Al finalizar, revisa tu puntuación.</footer>
+</div>
+
+<script>
+    // ==================== DATOS DEL CUESTIONARIO (20 preguntas) ====================
+    // Respuestas correctas según las justificaciones del material
+    const questionsData = [
+        { text: "En un nodo semiconductor de 2nm, el efecto túnel se considera un 'bug' crítico, mientras que en un procesador cuántico superconductor es una 'feature' esencial. ¿Cuál es la razón técnica fundamental de esta divergencia funcional?",
+          options: ["La necesidad de eliminar la disipación de calor por efecto Joule en circuitos de alta densidad.", "El uso del túnel de pares de Cooper a través de un aislante para definir los niveles de energía del qubit.", "La transición de una variable escalar discreta a un vector de estado en un espacio de Hilbert.", "El blindaje contra radiación ionizante mediante instalaciones subterráneas para proteger la barrera física."],
+          correct: "b",
+          explanation: "Correcta (b): En semiconductores el túnel genera fugas; en computación cuántica se aprovecha mediante la Unión Josephson para controlar pares de Cooper y definir los niveles del qubit."
+        },
+        { text: "Si un algoritmo cuántico requiere mantener la coherencia durante un tiempo de ejecución de 5 segundos, ¿qué arquitectura física sería, en teoría, la única capaz de soportarlo según los tiempos de coherencia de 2025?",
+          options: ["Circuitos Superconductores (~100 μs).", "Iones Atrapados (~10 s).", "Átomos Neutros (~1 s).", "Procesadores NISQ de 1,000 qubits físicos."],
+          correct: "b",
+          explanation: "Correcta (b): Los Iones Atrapados tienen ~10 s de coherencia, superando los 5 s; superconductores son μs, átomos neutros ~1 s."
+        },
+        { text: "Durante la medición de un qubit en estado de superposición $|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle$, se observa que el sistema colapsa siempre al polo $|0\\rangle$. ¿Qué diagnóstico es el más probable si este comportamiento es sistemático y no probabilístico?",
+          options: ["El qubit ha sufrido una interacción violenta con el mundo macroscópico antes de la medición.", "Las amplitudes de probabilidad $\\alpha$ y $\\beta$ son iguales a $1/\\sqrt{2}$.", "Se ha violado la condición de normalización $|\\alpha|^2 + |\\beta|^2 = 1$.", "Existe un ruido térmico excesivo que excita el qubit fuera de su subespacio de operación."],
+          correct: "a",
+          explanation: "Correcta (a): Si colapsa siempre al mismo polo sin seguir la distribución probabilística, sugiere pérdida previa de coherencia por interacción con el entorno (decoherencia)."
+        },
+        { text: "En la infraestructura criogénica de un procesador superconductor, se detecta un aumento en el error de fase (Ruido $T_2$). ¿En qué componente del 'Andamiaje Térmico' debería centrarse la inspección técnica?",
+          options: ["En el refrigerador de dilución, buscando fallos en la mezcla de isótopos $^3He$ y $^4He$.", "En los escudos térmicos de 50 K a 4 K para filtrar el ruido térmico.", "En el blindaje electromagnético de mu-metal para mitigar campos magnéticos.", "En los generadores de pulsos de microondas a temperatura ambiente (300 K)."],
+          correct: "c",
+          explanation: "Correcta (c): La matriz asocia campos magnéticos con ruido $T_2$ y prescribe blindaje de mu-metal como mitigación."
+        },
+        { text: "¿Por qué el entrelazamiento cuántico se describe como una correlación 'no-local' que habilita el paralelismo masivo?",
+          options: ["Porque permite que dos qubits en diferentes estados de Bell operen a 15 mK simultáneamente.", "Porque el estado de un qubit no puede describirse independientemente del otro, permitiendo cálculos en un espacio de $2^n$ dimensiones.", "Porque la información de fase se transmite a través de cables coaxiales con atenuadores entre 50 K y 4 K.", "Porque elimina la necesidad de compuertas unitarias al usar álgebra de Boole avanzada."],
+          correct: "b",
+          explanation: "Correcta (b): El entrelazamiento correlaciona qubits interdependientemente, sustentando el paralelismo en el espacio de Hilbert."
+        },
+        { text: "Un ingeniero intenta escalar un procesador de Iones Atrapados a 1 millón de qubits físicos para lograr tolerancia a fallos. ¿Cuál es el principal obstáculo arquitectónico según las fuentes?",
+          options: ["La corta vida útil de la Unión Josephson en entornos de vacío.", "La dificultad técnica de escalar masivamente las trampas de Paul electromagnéticas.", "La tasa de error por puerta, que es superior al 1% en esta arquitectura.", "La falta de aplicaciones en química cuántica para esta tecnología específica."],
+          correct: "b",
+          explanation: "Correcta (b): Los Iones Atrapados ofrecen alta fidelidad pero son 'difíciles de escalar masivamente' debido a su infraestructura de trampas."
+        },
+        { text: "En el contexto de la Era NISQ, ¿cuál es la implicación técnica de no contar con Corrección de Errores Cuánticos (QEC)?",
+          options: ["El procesador no puede operar por debajo de los 15 mK.", "El ruido se acumula exponencialmente, limitando la profundidad de ejecución del algoritmo.", "No es posible realizar una integración híbrida con nodos clásicos.", "Los qubits deben ser necesariamente de naturaleza escalar discreta."],
+          correct: "b",
+          explanation: "Correcta (b): En la era NISQ, sin QEC los errores se acumulan y limitan la profundidad de los algoritmos antes de perder validez."
+        },
+        { text: "Si un sistema cuántico muestra una alta tasa de colapso destructivo prematuro debido a impactos de rayos cósmicos en el sustrato, ¿qué medida de ingeniería avanzada se recomienda?",
+          options: ["Incrementar la precisión de la litografía en las salas blancas.", "Utilizar una mezcla más rica de isótopos de Helio en el refrigerador de dilución.", "Realizar la instalación del hardware en instalaciones subterráneas.", "Sustituir el álgebra de Boole por compuertas unitarias más robustas."],
+          correct: "c",
+          explanation: "Correcta (c): La radiación ionizante se mitiga con instalaciones subterráneas."
+        },
+        { text: "Al diseñar la interfaz entre un 'Classical Node' y un 'Quantum Node', se identifica un cuello de botella de latencia. ¿Cuál es el origen físico de este retraso según el flujo de arquitectura?",
+          options: ["La velocidad del entrelazamiento entre los qubits de Bell.", "El 'salto térmico' y la red de comunicación entre los 300 K y los mK.", "La conversión de qubits en bits dentro de la esfera de Bloch.", "El tiempo que tarda el refrigerador de dilución en absorber calor continuamente."],
+          correct: "b",
+          explanation: "Correcta (b): El cuello de botella ocurre en la red y el salto térmico entre la electrónica a 300 K y el procesador a mK."
+        },
+        { text: "¿Cuál es la diferencia fundamental entre la superposición cuántica y el concepto erróneo de 'estar en dos estados a la vez'?",
+          options: ["La superposición es una variable escalar discreta que cambia entre 0 y 1 rápidamente.", "Es una combinación lineal de vectores base con amplitudes complejas ($\\alpha$ y $\\beta$).", "Es un proceso físico irreversible que ocurre únicamente durante la medición.", "Depende de la redundancia clásica y los códigos ECC del semiconductor."],
+          correct: "b",
+          explanation: "Correcta (b): Superposición es combinación lineal matemática en espacio vectorial complejo, no dualidad de estados simultáneos."
+        },
+        { text: "Un procesador de Átomos Neutros utiliza arrays 2D reconfigurables. ¿Qué tecnología permite esta manipulación dinámica de la arquitectura?",
+          options: ["Uniones Josephson operando a niveles de energía anarmónicos.", "Pinzas ópticas láser.", "Refrigeradores de dilución de última generación (100 mK).", "Capas de aislamiento y atenuación de 4 K."],
+          correct: "b",
+          explanation: "Correcta (b): Átomos Neutros usan pinzas ópticas láser para configurar arrays 2D reconfigurables."
+        },
+        { text: "Para crear un único 'Qubit Lógico' perfecto, ¿cuántos qubits físicos ruidosos se estima que se requieren mediante el código de superficie?",
+          options: ["Exactamente 2, para formar un estado de Bell.", "Aproximadamente 1,000 qubits físicos.", "Entre 50 y 1,000, dependiendo de si es la era NISQ.", "Un millón de qubits físicos para superar el umbral de los 15 mK."],
+          correct: "b",
+          explanation: "Correcta (b): El código de superficie requiere ~1,000 qubits físicos para un qubit lógico perfecto."
+        },
+        { text: "¿Qué fenómeno físico ocurre en el 'Plano Cuántico' a 15 mK que es 180 veces más frío que el espacio profundo?",
+          options: ["La electrónica de control ambiental alcanza su máxima eficiencia de cómputo.", "El procesador superconductor opera eliminando la excitación térmica de los qubits.", "Los cables coaxiales filtran el ruido mediante atenuadores de helio líquido.", "Se alcanza el TRL 9 en la escala de madurez industrial."],
+          correct: "b",
+          explanation: "Correcta (b): El plano cuántico a 15 mK minimiza ruido térmico para mantener estados cuánticos."
+        },
+        { text: "En la notación de Dirac $|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle$, si queremos conocer la probabilidad de obtener un '1' al medir, ¿qué operación debemos realizar?",
+          options: ["Calcular el valor absoluto de la amplitud de fase $\\alpha$.", "Determinar el cuadrado del módulo de la amplitud $\\beta$ ($|\\beta|^2$).", "Sumar las amplitudes $\\alpha + \\beta$ y normalizarlas a 15 mK.", "Medir la posición del vector en el eje Y de la esfera de Bloch."],
+          correct: "b",
+          explanation: "Correcta (b): La probabilidad de colapsar a $|1\\rangle$ es $|\\beta|^2$."
+        },
+        { text: "¿Qué componente del procesador cuántico es responsable de absorber calor continuamente mediante la dilución de isótopos?",
+          options: ["El blindaje electromagnético de mu-metal.", "El corazón del sistema: la mezcla de $^3He$ y $^4He$ en el refrigerador de dilución.", "Las pinzas ópticas láser en el array 2D.", "Los DACs precisos a nanosegundos en la etapa de 300 K."],
+          correct: "b",
+          explanation: "Correcta (b): El refrigerador de dilución usa mezcla de isótopos de Helio para absorber calor continuamente."
+        },
+        { text: "Un sistema muestra errores frecuentes debido a impurezas en los óxidos de las uniones Josephson. ¿Qué área de la cadena de suministro debe ser auditada?",
+          options: ["El diseño de los algoritmos de optimización de carteras.", "La litografía de precisión y la pureza en las salas blancas.", "El sistema de redundancia clásica ECC en el nodo de silicio.", "La conectividad de red en el clúster heterogéneo."],
+          correct: "b",
+          explanation: "Correcta (b): Defectos materiales en uniones Josephson se mitigan con mejores procesos de fabricación (salas blancas y litografía)."
+        },
+        { text: "Al comparar un Bit clásico con un Qubit, ¿cuál es la diferencia en sus operaciones fundamentales?",
+          options: ["El Bit usa compuertas unitarias y el Qubit usa álgebra de Boole.", "El Bit usa AND/OR/NOT; el Qubit usa compuertas unitarias en el espacio de Hilbert.", "El Bit es extremadamente frágil y el Qubit es robusto frente al ruido.", "El Bit opera a 15 mK y el Qubit a temperatura ambiente (300 K)."],
+          correct: "b",
+          explanation: "Correcta (b): Bit clásico usa álgebra de Boole; qubit usa transformaciones unitarias sobre vectores de estado."
+        },
+        { text: "¿Por qué se afirma que el futuro de la computación es 'inexorablemente híbrido'?",
+          options: ["Porque los procesadores cuánticos reemplazarán totalmente al silicio en 2025.", "Porque ambas tecnologías son complementarias: la QPU actúa como un acelerador especializado integrado en clústeres clásicos.", "Porque el entrelazamiento permite que los bits clásicos se conviertan en qubits a temperatura ambiente.", "Porque los códigos LDPC cuánticos requieren de la Ley de Moore para escalar."],
+          correct: "b",
+          explanation: "Correcta (b): QPU no reemplaza al silicio, sino que opera como acelerador integrado en infraestructura heterogénea."
+        },
+        { text: "¿Cuál es el nivel de Madurez Industrial (TRL) actual de la computación cuántica comparado con la tecnología de semiconductores?",
+          options: ["Cuántica TRL 9; Semiconductor TRL 4-5.", "Ambas tecnologías están en TRL 9.", "Cuántica TRL 4-5 (prototipos); Semiconductor TRL 9 (ecosistema masivo).", "No existe una escala de TRL aplicable a sistemas criogénicos."],
+          correct: "c",
+          explanation: "Correcta (c): Cuántica en fase de prototipos (TRL 4-5), clásica en TRL 9 (madura)."
+        },
+        { text: "Si un vector de estado en la Esfera de Bloch pierde su información de fase y amplitud previa tras una lectura, ¿qué proceso ha ocurrido?",
+          options: ["Una optimización de rutas y carteras financieras.", "Un colapso destructivo irreversible por medición en la base computacional.", "Una transición exitosa de un Bit a un Qubit mediante efecto túnel.", "Un incremento en el tiempo de coherencia de los Átomos Neutros."],
+          correct: "b",
+          explanation: "Correcta (b): La medición es una intervención violenta que destruye la superposición (colapso irreversible)."
+        }
+    ];
+
+    let userAnswers = new Array(20).fill(null);
+    let currentIndex = 0;
+
+    const questionContainer = document.getElementById('questionContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const finalScoreBtn = document.getElementById('finalScoreBtn');
+    const questionCounterSpan = document.getElementById('questionCounter');
+    const liveScoreSpan = document.getElementById('liveScore');
+    const resultsPanel = document.getElementById('resultsPanel');
+
+    function updateLiveScore() {
+        let correctCount = 0;
+        for (let i = 0; i < userAnswers.length; i++) {
+            if (userAnswers[i] && userAnswers[i] === questionsData[i].correct) correctCount++;
+        }
+        liveScoreSpan.textContent = `✅ Aciertos: ${correctCount} / 20`;
+        return correctCount;
+    }
+
+    function saveAnswer(selectedLetter) {
+        userAnswers[currentIndex] = selectedLetter;
+        updateLiveScore();
+        renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+        const q = questionsData[currentIndex];
+        const selected = userAnswers[currentIndex];
+        const letters = ['a', 'b', 'c', 'd'];
+        let optionsHtml = '';
+        q.options.forEach((opt, idx) => {
+            const letter = letters[idx];
+            const isChecked = (selected === letter);
+            optionsHtml += `
+                <div class="option" data-letter="${letter}">
+                    <input type="radio" name="question" value="${letter}" id="opt_${letter}" ${isChecked ? 'checked' : ''}>
+                    <label for="opt_${letter}"><strong>${letter.toUpperCase()})</strong> ${opt}</label>
+                </div>
+            `;
+        });
+
+        let feedbackHtml = '';
+        if (selected) {
+            const isCorrect = (selected === q.correct);
+            const correctLetter = q.correct;
+            const correctText = q.options[letters.indexOf(correctLetter)];
+            const explanation = q.explanation;
+            if (isCorrect) {
+                feedbackHtml = `<div class="feedback correct">✅ <strong>¡Correcto!</strong> ${explanation}</div>`;
+            } else {
+                feedbackHtml = `<div class="feedback incorrect">❌ <strong>Incorrecto.</strong> La respuesta correcta es ${correctLetter.toUpperCase()}) ${correctText}.<br>${explanation}</div>`;
+            }
+        } else {
+            feedbackHtml = `<div class="feedback" style="border-left-color:#ffcc88; background:#fff5e6;">⚡ Selecciona una opción para ver la retroalimentación.</div>`;
+        }
+
+        const html = `
+            <div class="question-card">
+                <div class="question-text">${q.text}</div>
+                <div class="options" id="optionsContainer">
+                    ${optionsHtml}
+                </div>
+                ${feedbackHtml}
+            </div>
+        `;
+        questionContainer.innerHTML = html;
+
+        // Event listeners
+        const optionDivs = document.querySelectorAll('.option');
+        optionDivs.forEach(div => {
+            const radio = div.querySelector('input[type="radio"]');
+            const letter = div.getAttribute('data-letter');
+            if (radio) {
+                radio.addEventListener('change', () => {
+                    if (radio.checked) saveAnswer(letter);
+                });
+            }
+            div.addEventListener('click', (e) => {
+                if (e.target.tagName !== 'INPUT') {
+                    const radioInside = div.querySelector('input');
+                    if (radioInside && !radioInside.checked) {
+                        radioInside.checked = true;
+                        saveAnswer(letter);
+                    }
+                }
+            });
+        });
+
+        questionCounterSpan.textContent = `Pregunta ${currentIndex+1} / 20`;
+    }
+
+    function showFinalResults() {
+        let correctCount = 0;
+        let detailsHtml = '';
+        for (let i = 0; i < questionsData.length; i++) {
+            const q = questionsData[i];
+            const userAns = userAnswers[i];
+            const isCorrect = (userAns === q.correct);
+            if (isCorrect) correctCount++;
+            const statusIcon = isCorrect ? '✅' : '❌';
+            const userShow = userAns ? userAns.toUpperCase() : '—';
+            const correctShow = q.correct.toUpperCase();
+            detailsHtml += `
+                <div class="result-item">
+                    <span style="min-width: 30px;">${statusIcon}</span>
+                    <span><strong>Pregunta ${i+1}</strong> (Tu respuesta: ${userShow} / Correcta: ${correctShow})</span>
+                </div>
+            `;
+        }
+        const percent = Math.round((correctCount / 20) * 100);
+        resultsPanel.innerHTML = `
+            <h3>📊 Resultado final</h3>
+            <div class="result-summary">🎯 Aciertos: ${correctCount} de 20 (${percent}%)</div>
+            <div class="result-detail">${detailsHtml}</div>
+            <button id="closeResultsBtn" class="btn btn-secondary" style="margin-top: 10px; width:100%;">✖ Cerrar resumen</button>
+        `;
+        resultsPanel.style.display = 'block';
+        document.getElementById('closeResultsBtn')?.addEventListener('click', () => {
+            resultsPanel.style.display = 'none';
+        });
+        alert(`📊 Cuestionario completado.\nAciertos: ${correctCount} de 20 (${percent}%)\nRevisa el resumen detallado en pantalla.`);
+    }
+
+    function nextQuestion() {
+        if (currentIndex < 19) {
+            currentIndex++;
+            renderCurrentQuestion();
+        } else {
+            const unanswered = userAnswers.filter(a => a === null).length;
+            if (unanswered > 0) {
+                if (confirm(`Aún tienes ${unanswered} pregunta(s) sin responder. ¿Deseas finalizar de todas formas? Las no respondidas se contarán como incorrectas.`)) {
+                    showFinalResults();
+                }
+            } else {
+                showFinalResults();
+            }
+        }
+    }
+
+    function prevQuestion() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderCurrentQuestion();
+        } else {
+            alert("Ya estás en la primera pregunta.");
+        }
+    }
+
+    function resetQuiz() {
+        if (confirm("¿Reiniciar todo el cuestionario? Se perderán todas las respuestas.")) {
+            userAnswers = new Array(20).fill(null);
+            currentIndex = 0;
+            resultsPanel.style.display = 'none';
+            updateLiveScore();
+            renderCurrentQuestion();
+        }
+    }
+
+    prevBtn.addEventListener('click', prevQuestion);
+    nextBtn.addEventListener('click', nextQuestion);
+    resetBtn.addEventListener('click', resetQuiz);
+    finalScoreBtn.addEventListener('click', showFinalResults);
+
+    renderCurrentQuestion();
+    updateLiveScore();
+</script>
+</body>
+</html>
